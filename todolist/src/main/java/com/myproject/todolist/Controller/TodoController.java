@@ -3,9 +3,9 @@ package com.myproject.todolist.Controller;
 import com.myproject.todolist.Dto.TodoDto;
 import com.myproject.todolist.Service.TodoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,5 +17,13 @@ public class TodoController {
     @GetMapping("/todos")
     public List<TodoDto> todoDtoList(){
         return todoService.getTodos();
+    }
+    @PostMapping("/todos")
+    public TodoDto addTodo(@RequestBody TodoDto todoDto){
+        return todoService.addTodo(todoDto);
+    }
+    @DeleteMapping("/todos/{id}")
+    public ResponseEntity<String> deleteTodo(@PathVariable Long id){
+        return todoService.deleteTodo(id);
     }
 }

@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class TodoDto {
+    private Long id;
     private String text;
-    private Boolean completed;
+    private Boolean completed = false;
 }
