@@ -22,6 +22,10 @@ public class TodoController {
     public TodoDto addTodo(@RequestBody TodoDto todoDto){
         return todoService.addTodo(todoDto);
     }
+    @PatchMapping("/todos/{id}")
+    public ResponseEntity<String> toggleComplete(@RequestBody TodoDto todoDto){
+        return todoService.toggleComplete(todoDto);
+    }
     @DeleteMapping("/todos/{id}")
     public ResponseEntity<String> deleteTodo(@PathVariable Long id){
         return todoService.deleteTodo(id);

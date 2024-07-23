@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,10 +53,27 @@ public class TodoService {
 
     public ResponseEntity<String> deleteTodo(Long id) {
         User user = userRepository.findByUsername(getCurrentUsername());
+        if(!todoRepository.existsByIdAndUser(id,user)){
+            return new ResponseEntity<>("Todo not found",HttpStatus.NOT_FOUND);
+        }
         Todo todo = new Todo();
         todo.setId(id);
         todo.setUser(user);
         todoRepository.delete(todo);
         return new ResponseEntity<>("Todo Deleted", HttpStatus.OK);
+    }
+
+    public ResponseEntity<String> toggleComplete(TodoDto todoDto) {
+        User user = userRepository.findByUsername(getCurrentUsername());
+        if(!todoRepository.existsByIdAndUser(todoDto.getId(),user)){
+            return new ResponseEntity<>("Todo not found",HttpStatus.NOT_FOUND);
+        }
+        Optional<Todo> optionalTodo = todoRepository.findById(todoDto.getId());
+        Todo todo = optionalTodo.get();
+        todo.setId(todoDto.getId());
+        todo.setUser(user);
+        todo.setCompleted(todoDto.getCompleted());
+        todoRepository.save(todo);
+        return new ResponseEntity<>("Todo Toggled", HttpStatus.OK);
     }
 }
