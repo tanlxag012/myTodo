@@ -41,7 +41,6 @@ public class TodoService {
            return todoDto;
        }).collect(Collectors.toList());
     }
-
     public TodoDto addTodo(TodoDto todoDto) {
         User user = userRepository.findByUsername(getCurrentUsername());
         Todo todo = new Todo();
@@ -50,19 +49,18 @@ public class TodoService {
         todoRepository.save(todo);
         return todoDto;
     }
-
     public ResponseEntity<String> deleteTodo(Long id) {
         User user = userRepository.findByUsername(getCurrentUsername());
+        //Check xem user này có sở hữu id đó ko ?
         if(!todoRepository.existsByIdAndUser(id,user)){
             return new ResponseEntity<>("Todo not found",HttpStatus.NOT_FOUND);
         }
-        Todo todo = new Todo();
-        todo.setId(id);
-        todo.setUser(user);
-        todoRepository.delete(todo);
+        //Có thì delete
+        todoRepository.deleteById(id);
         return new ResponseEntity<>("Todo Deleted", HttpStatus.OK);
     }
 
+    // Implementation of PATCH method
     public ResponseEntity<String> toggleComplete(TodoDto todoDto) {
         User user = userRepository.findByUsername(getCurrentUsername());
         if(!todoRepository.existsByIdAndUser(todoDto.getId(),user)){
@@ -70,10 +68,8 @@ public class TodoService {
         }
         Optional<Todo> optionalTodo = todoRepository.findById(todoDto.getId());
         Todo todo = optionalTodo.get();
-        todo.setId(todoDto.getId());
-        todo.setUser(user);
         todo.setCompleted(todoDto.getCompleted());
         todoRepository.save(todo);
-        return new ResponseEntity<>("Todo Toggled", HttpStatus.OK);
+        return new ResponseEntity<>("Todo toggled", HttpStatus.OK);
     }
 }
